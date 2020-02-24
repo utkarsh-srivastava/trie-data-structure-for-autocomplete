@@ -10,8 +10,11 @@ class Node():
         if len(string) == 0:
             self.word_match = True
             return
+        # first char of string
         key = string[0]
+        # remaining char of string except the first
         string = string[1:]
+        # check if the next node with key is available or not. If not then create the next node with the key
         if key in self.next:
             self.next[key].add_word(string)
         else:
@@ -40,6 +43,7 @@ class Node():
                 self.next[key].populate_matching_words(
                     word_to_search, aggregated_word)
             else:
+                print('No results found')
                 return []
         else:
             if self.word_match == True:
@@ -48,10 +52,20 @@ class Node():
                 self.next[k].dfs(matched_words, aggregated_word + k)
 
 
-if __name__ == "__main__":
+def insert_words_from_files():
     root = Node()
-    root.add_word('apple')
-    root.add_word('applet')
-    # root.populate_matching_words('ut')
-    root.populate_matching_words('apple')
-    print(matched_words)
+    with open('dict.txt', mode='r') as f:
+        contents = f.readlines()
+        for word in contents:
+            root.add_word(word.strip('\r\n'))
+    return root
+
+
+if __name__ == "__main__":
+    root = insert_words_from_files()
+    while True:
+        matched_words = []
+        print('Enter the word to search')
+        word_to_search = input()
+        root.populate_matching_words(word_to_search)
+        print(matched_words)
